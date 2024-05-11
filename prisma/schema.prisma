@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("CONFIG_DATABASE_URI")
+}
+
+enum AuthLoggerType {
+  INFO
+  ERROR
+}
+
+enum AuthAction {
+  LOGIN
+  REGISTER
+  CHANGE_PASSWORD
+  RESET_PASSWORD
+  CHANGE_EMAIL
+  SEND_CODE
+  VERIFICATION_EMAIL
+}
+
+enum Actor {
+  USER
+  SYSTEM
+}
+
+model AuthLogger {
+  id            Int            @id @default(autoincrement())
+  user_id       Int?
+  message       String
+  log_date      DateTime
+  public        Boolean
+  result        String
+  type          AuthLoggerType
+  actor         Actor
+  error_message String?
+  auth_action   AuthAction?
+
+  @@index([log_date])
+  @@map("auth_logger")
+}
